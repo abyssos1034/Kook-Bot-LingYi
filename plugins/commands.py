@@ -1,7 +1,7 @@
 import requests, json, os
 
 from khl import Bot, Message, MessageTypes
-from khl.card import Card, CardMessage, Module, Element
+from khl.card import Card, CardMessage, Module, Element, Types
 
 from .init import *
 from .lucky import *
@@ -111,10 +111,11 @@ def initCommands(bot: Bot) -> None:
 
     @bot.command(name='关于', aliases=['about'], case_sensitive=False)
     async def getAbout(msg: Message, *args):
+        img_url = await bot.client.create_asset(f'.{os.sep}images{os.sep}rowin.jpg')
         c = Card(Module.Header(Element.Text(f'关于 {g_name} Bot')),
                  Module.Divider(),
-                 Module.Section(Element.Text(f'**Version:** {g_version}')),
-                 Module.Section(Element.Text(f'**Creator:** 落云Rowin')),
+                 Module.Section(Element.Text(f'**Version:** {g_version}\n**Creator:** 落云Rowin'),
+                                Element.Image(src=img_url)),
                  color='#dddddd')
         await msg.reply(CardMessage(c), use_quote=False)
         addLog(f'[CMD]用户{msg.author_id}：关于，传参为{args}')
@@ -135,6 +136,6 @@ def initCommands(bot: Bot) -> None:
     @bot.command(name='test', case_sensitive=False)
     async def testFunc(msg: Message, *args):
         if msg.author_id in g_admin or True:
-            log_file = await bot.client.create_asset(f'.{os.sep}log{os.sep}{logName()}.log')
-            await msg.reply(log_file, type=MessageTypes.FILE, use_quote=False)
+            log_url = await bot.client.create_asset(f'.{os.sep}log{os.sep}{logName()}.log')
+            await msg.reply(log_url, type=MessageTypes.FILE, use_quote=False)
             addLog(f'[DEB]"testFunc()" was called by {msg.author_id}, with args {args}.".')
