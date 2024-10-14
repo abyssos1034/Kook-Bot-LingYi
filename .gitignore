@@ -1,0 +1,5 @@
+__pycache__/
+Bot/
+log/
+plugins/__pycache__/
+config.json
