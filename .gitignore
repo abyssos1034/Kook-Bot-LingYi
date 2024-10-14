@@ -1,5 +1,6 @@
 __pycache__/
 Bot/
+images/pic/
 log/
 plugins/__pycache__/
 config.json
