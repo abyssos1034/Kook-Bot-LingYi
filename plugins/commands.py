@@ -44,25 +44,25 @@ def initCommands(bot: Bot) -> None:
         else:
             arg = args[0].lower()
             if arg in ['帮助', 'help', '机器人帮助']:
-                c = Card(Module.Header(Element.Text('指令：`/帮助 <指令名称或别名>`')),
+                c = Card(Module.Header(Element.Text('指令：/帮助 <指令名称或别名>')),
                          Module.Section(Element.Text('别名：Help、机器人帮助')),
                          Module.Section(Element.Text('接受参数类型：`None|str`')),
                          Module.Section(Element.Text('查看 Bot 指令帮助，或查看关于某指令的详细帮助。')),
                          color='#dddddd')
             elif arg in ['今日人品']:
-                c = Card(Module.Header(Element.Text('指令：`/今日人品`')),
+                c = Card(Module.Header(Element.Text('指令：/今日人品')),
                          Module.Section(Element.Text('接受参数类型：`None`')),
                          Module.Section(Element.Text('查询今日人品，返回值为0-100的随机整数，当天某特定用户的数值不变。')),
                          color='#dddddd')
             elif arg in ['点歌']:
-                c = Card(Module.Header(Element.Text('指令：`/点歌 <歌曲名>`')),
+                c = Card(Module.Header(Element.Text('指令：/点歌 <歌曲名>')),
                          Module.Section(Element.Text('~~接受参数类型：`str|tuple`~~')),
                          Module.Section(Element.Text('~~示例：`/点歌 春日影`~~')),
                          Module.Section(Element.Text('~~将指定歌曲加入播放列表中。~~')),
                          Module.Context(Element.Text('~~（本功能暂未实现，抱歉！）~~')),
                          color='#dddddd')
             elif arg in ['随机涩图', 'setu', '随机色图', '来点图图', '来点色图', '来点涩图']:
-                c = Card(Module.Header(Element.Text('指令：`/随机涩图 <表达式>`')),
+                c = Card(Module.Header(Element.Text('指令：/随机涩图 <表达式>')),
                          Module.Section(Element.Text('别名：Setu、随机色图、来点图图、来点色图、来点涩图')),
                          Module.Section(Element.Text('接受参数类型：`None|str|tuple`')),
                          Module.Section(Element.Text('示例：`/随机涩图 原神|明日方舟&白丝|黑丝`')),
@@ -70,19 +70,19 @@ def initCommands(bot: Bot) -> None:
                          Module.Section(Element.Text('此处使用`https://api.lolicon.app/setu/v2`这一api。')),
                          color='#dddddd')
             elif arg in ['扔骰子', 'dice', '掷骰子']:
-                c = Card(Module.Header(Element.Text('指令：`/扔骰子 [4|6|8|10|12|20|100]`')),
+                c = Card(Module.Header(Element.Text('指令：/扔骰子 [4|6|8|10|12|20|100]')),
                          Module.Section(Element.Text('别名：Dice、掷骰子')),
                          Module.Section(Element.Text('接受参数类型：`None|int`')),
                          Module.Section(Element.Text('扔出指定面数的骰子，默认掷出六面骰。')),
                          color='#dddddd')
             elif arg in ['关于', 'about']:
-                c = Card(Module.Header(Element.Text('指令：`/关于`')),
+                c = Card(Module.Header(Element.Text('指令：/关于')),
                          Module.Section(Element.Text('别名：About')),
                          Module.Section(Element.Text('接受参数类型：`None`')),
                          Module.Section(Element.Text('查看关于 Bot 的详细信息。')),
                          color='#dddddd')
             elif arg in ['机器人下线', 'exit']:
-                c = Card(Module.Header(Element.Text('指令：`/机器人下线`')),
+                c = Card(Module.Header(Element.Text('指令：/机器人下线')),
                          Module.Section(Element.Text('别名：Exit')),
                          Module.Section(Element.Text('接受参数类型：`None`')),
                          Module.Section(Element.Text('下线 Bot ，仅限管理员使用。')),
@@ -134,7 +134,7 @@ def initCommands(bot: Bot) -> None:
             try:
                 n = int(args[0])
                 t = newDice(n)
-            finally:
+            except:
                 t = '不存在这种骰子。'
         else:
             t = newDice()
@@ -167,7 +167,7 @@ def initCommands(bot: Bot) -> None:
 
     @bot.command(name='test', case_sensitive=False)
     async def testFunc(msg: Message, *args):
-        if msg.author_id in g_admin or True:
+        if msg.author_id in g_admin:
             log_url = await bot.client.create_asset(f'.{os.sep}log{os.sep}{logName()}.log')
             await msg.reply(log_url, type=MessageTypes.FILE, use_quote=False)
             addLog(f'[DEB]"testFunc()" was called by {msg.author_id}, with args {args}.".')
