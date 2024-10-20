@@ -37,9 +37,6 @@ def initCommands(bot: Bot) -> None:
                      Module.Section(Element.Text('别名：About')),
                      Module.Section(Element.Text('查看关于 Bot 的详细信息。')),
                      Module.Divider(),
-                     Module.Section(Element.Text('`/机器人下线`')),
-                     Module.Section(Element.Text('别名：Exit')),
-                     Module.Section(Element.Text('下线 Bot ，仅限管理员使用。')),
                      color='#dddddd')
         else:
             arg = args[0].lower()
@@ -61,11 +58,20 @@ def initCommands(bot: Bot) -> None:
                          Module.Section(Element.Text('~~将指定歌曲加入播放列表中。~~')),
                          Module.Context(Element.Text('~~（本功能暂未实现，抱歉！）~~')),
                          color='#dddddd')
+            elif arg in ['导入歌单']:
+                c = Card(Module.Header(Element.Text('指令：/导入歌单 <歌单的url>')),
+                         Module.Section(Element.Text('~~接受参数类型：`str`~~')),
+                         Module.Section(Element.Text('~~示例：`/导入歌单 `~~')),
+                         Module.Section(Element.Text('~~将指定歌曲加入播放列表中。~~')),
+                         Module.Context(Element.Text('~~（本功能暂未实现，抱歉！）~~')),
+                         color='#dddddd')
             elif arg in ['随机涩图', 'setu', '随机色图', '来点图图', '来点色图', '来点涩图']:
                 c = Card(Module.Header(Element.Text('指令：/随机涩图 <表达式>')),
                          Module.Section(Element.Text('别名：Setu、随机色图、来点图图、来点色图、来点涩图')),
                          Module.Section(Element.Text('接受参数类型：`None|str|tuple`')),
                          Module.Section(Element.Text('示例：`/随机涩图 原神|明日方舟&白丝|黑丝`')),
+                         Module.Section(Element.Text('注1：为简易起见，此处的**或运算**比**与运算**的优先级更高，且不支持使用小括号。')),
+                         Module.Section(Element.Text('注2：支持的**或运算符**：`|、||、or`，支持的**与运算符**：`&、&&、and`')),
                          Module.Section(Element.Text('让 Bot 发送随机涩图，或通过表达式让 Bot 发送指定Tag的随机涩图。')),
                          Module.Section(Element.Text('此处使用`https://api.lolicon.app/setu/v2`这一api。')),
                          color='#dddddd')
@@ -80,12 +86,6 @@ def initCommands(bot: Bot) -> None:
                          Module.Section(Element.Text('别名：About')),
                          Module.Section(Element.Text('接受参数类型：`None`')),
                          Module.Section(Element.Text('查看关于 Bot 的详细信息。')),
-                         color='#dddddd')
-            elif arg in ['机器人下线', 'exit']:
-                c = Card(Module.Header(Element.Text('指令：/机器人下线')),
-                         Module.Section(Element.Text('别名：Exit')),
-                         Module.Section(Element.Text('接受参数类型：`None`')),
-                         Module.Section(Element.Text('下线 Bot ，仅限管理员使用。')),
                          color='#dddddd')
             else:
                 c = Card(Module.Section(Element.Text(f'不存在关于`{arg}`的指令帮助。')),
@@ -165,9 +165,10 @@ def initCommands(bot: Bot) -> None:
             addLog(f'[CMD]用户{msg.author_id}：机器人下线，传参为{args}')
             addLog(f'[ERR]用户权限不足')
 
-    @bot.command(name='test', case_sensitive=False)
-    async def testFunc(msg: Message, *args):
+    @bot.command(name='debug', aliases=['test'], case_sensitive=False, prefixes=['//'])
+    async def debugFunc(msg: Message, *args):
         if msg.author_id in g_admin:
+            addLog(f'[DEB]"debugFunc()" was called by {msg.author_id}, with args {args}.".')
+            debug_channel = await bot.client.fetch_public_channel(g_debug)
             log_url = await bot.client.create_asset(f'.{os.sep}log{os.sep}{logName()}.log')
-            await msg.reply(log_url, type=MessageTypes.FILE, use_quote=False)
-            addLog(f'[DEB]"testFunc()" was called by {msg.author_id}, with args {args}.".')
+            await debug_channel.send(log_url, type=MessageTypes.FILE)

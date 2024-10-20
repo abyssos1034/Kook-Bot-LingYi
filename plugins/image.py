@@ -6,9 +6,9 @@ from .init import *
 
 def splitExpr(expr: str) -> list:
     output = []
-    tmp = expr.replace('and', '&').split('&')
+    tmp = expr.replace('and', '&').replace('&&', '&').split('&')
     for i in tmp:
-        output.append(i.replace('or', '|').split('|'))
+        output.append(i.replace('or', '|').replace('||', '|').split('|'))
     return output
 
 async def img_upload(img_url: str, bot: Bot) -> str:
