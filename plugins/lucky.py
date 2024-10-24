@@ -5,13 +5,13 @@ from khl import User
 from .globals import *
 
 def lucky(user: User) -> int:
-    global g_lucky
+    global lucky_list
     lucky_value = -1
-    if user in g_lucky:
-        lucky_value = g_lucky[user]
+    if user in lucky_list:
+        lucky_value = lucky_list[user]
     else:
         lucky_value = random.randint(0, 100)
-        g_lucky[user] = lucky_value
+        lucky_list[user] = lucky_value
     return lucky_value
 
 def luckyText(num: int) -> str:

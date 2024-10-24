@@ -7,15 +7,16 @@ from .init import *
 from .lucky import *
 from .image import *
 from .dice import *
+from .music import *
 
 def initCommands(bot: Bot) -> None:
-    @bot.command(name='帮助', aliases=['help', '机器人帮助'], case_sensitive=False)
+    @bot.command(name='help', aliases=['帮助', '机器人帮助'], case_sensitive=False)
     async def showHelp(msg: Message, *args: str):
         if not args:
             c = Card(Module.Header(Element.Text('Bot 指令帮助')),
                      Module.Divider(),
-                     Module.Section(Element.Text('`/帮助 <指令名称或别名>`')),
-                     Module.Section(Element.Text('别名：Help、机器人帮助')),
+                     Module.Section(Element.Text('`/help <指令名称或别名>`')),
+                     Module.Section(Element.Text('别名：帮助、机器人帮助')),
                      Module.Section(Element.Text('查看 Bot 指令帮助，或查看关于某指令的详细帮助。')),
                      Module.Divider(),
                      Module.Section(Element.Text('`/今日人品`')),
@@ -25,24 +26,24 @@ def initCommands(bot: Bot) -> None:
                      Module.Section(Element.Text('~~（本功能暂未实现，抱歉！）~~')),
                      Module.Section(Element.Text('~~将指定歌曲加入播放列表中。~~')),
                      Module.Divider(),
-                     Module.Section(Element.Text('`/随机涩图 <表达式>`')),
-                     Module.Section(Element.Text('别名：随机色图、来点图图、来点色图、来点涩图')),
+                     Module.Section(Element.Text('`/setu <表达式>`')),
+                     Module.Section(Element.Text('别名：随机涩图、随机色图、来点图图、来点色图、来点涩图')),
                      Module.Section(Element.Text('让 Bot 发送随机涩图，或通过表达式让 Bot 发送指定Tag的涩图。')),
                      Module.Divider(),
-                     Module.Section(Element.Text('`/扔骰子 [4|6|8|10|12|20|100]`')),
-                     Module.Section(Element.Text('别名：Dice、掷骰子')),
+                     Module.Section(Element.Text('`/dice [4|6|8|10|12|20|100]`')),
+                     Module.Section(Element.Text('别名：扔骰子、掷骰子')),
                      Module.Section(Element.Text('扔出指定面数的骰子，默认掷出六面骰。')),
                      Module.Divider(),
-                     Module.Section(Element.Text('`/关于`')),
-                     Module.Section(Element.Text('别名：About')),
+                     Module.Section(Element.Text('`/about`')),
+                     Module.Section(Element.Text('别名：关于')),
                      Module.Section(Element.Text('查看关于 Bot 的详细信息。')),
                      Module.Divider(),
                      color='#dddddd')
         else:
             arg = args[0].lower()
-            if arg in ['帮助', 'help', '机器人帮助']:
-                c = Card(Module.Header(Element.Text('指令：/帮助 <指令名称或别名>')),
-                         Module.Section(Element.Text('别名：Help、机器人帮助')),
+            if arg in ['help', '帮助', '机器人帮助']:
+                c = Card(Module.Header(Element.Text('指令：/help <指令名称或别名>')),
+                         Module.Section(Element.Text('别名：帮助、机器人帮助')),
                          Module.Section(Element.Text('接受参数类型：`None|str`')),
                          Module.Section(Element.Text('查看 Bot 指令帮助，或查看关于某指令的详细帮助。')),
                          color='#dddddd')
@@ -59,31 +60,31 @@ def initCommands(bot: Bot) -> None:
                          Module.Context(Element.Text('~~（本功能暂未实现，抱歉！）~~')),
                          color='#dddddd')
             elif arg in ['导入歌单']:
-                c = Card(Module.Header(Element.Text('指令：/导入歌单 <歌单的url>')),
-                         Module.Section(Element.Text('~~接受参数类型：`str`~~')),
-                         Module.Section(Element.Text('~~示例：`/导入歌单 `~~')),
-                         Module.Section(Element.Text('~~将指定歌曲加入播放列表中。~~')),
+                c = Card(Module.Header(Element.Text('指令：/导入歌单 <歌单URL|歌单ID>')),
+                         Module.Section(Element.Text('~~接受参数类型：`str|int`~~')),
+                         Module.Section(Element.Text('~~示例：`/导入歌单 https://y.qq.com/n/ryqq/playlist/9322047681`或`/导入歌单 9322047681`~~')),
+                         Module.Section(Element.Text('~~将指定歌单中的歌曲加入播放列表中。~~')),
                          Module.Context(Element.Text('~~（本功能暂未实现，抱歉！）~~')),
                          color='#dddddd')
-            elif arg in ['随机涩图', 'setu', '随机色图', '来点图图', '来点色图', '来点涩图']:
-                c = Card(Module.Header(Element.Text('指令：/随机涩图 <表达式>')),
-                         Module.Section(Element.Text('别名：Setu、随机色图、来点图图、来点色图、来点涩图')),
+            elif arg in ['setu', '随机涩图', '随机色图', '来点图图', '来点色图', '来点涩图']:
+                c = Card(Module.Header(Element.Text('指令：/setu <表达式>')),
+                         Module.Section(Element.Text('别名：随机涩图、随机色图、来点图图、来点色图、来点涩图')),
                          Module.Section(Element.Text('接受参数类型：`None|str|tuple`')),
-                         Module.Section(Element.Text('示例：`/随机涩图 原神|明日方舟&白丝|黑丝`')),
+                         Module.Section(Element.Text('示例：`/setu 原神|明日方舟&白丝|黑丝`')),
                          Module.Section(Element.Text('注1：为简易起见，此处的**或运算**比**与运算**的优先级更高，且不支持使用小括号。')),
                          Module.Section(Element.Text('注2：支持的**或运算符**：`|、||、or`，支持的**与运算符**：`&、&&、and`')),
                          Module.Section(Element.Text('让 Bot 发送随机涩图，或通过表达式让 Bot 发送指定Tag的随机涩图。')),
                          Module.Section(Element.Text('此处使用`https://api.lolicon.app/setu/v2`这一api。')),
                          color='#dddddd')
-            elif arg in ['扔骰子', 'dice', '掷骰子']:
-                c = Card(Module.Header(Element.Text('指令：/扔骰子 [4|6|8|10|12|20|100]')),
-                         Module.Section(Element.Text('别名：Dice、掷骰子')),
+            elif arg in ['dice', '扔骰子', '掷骰子']:
+                c = Card(Module.Header(Element.Text('指令：/dice [4|6|8|10|12|20|100]')),
+                         Module.Section(Element.Text('别名：扔骰子、掷骰子')),
                          Module.Section(Element.Text('接受参数类型：`None|int`')),
                          Module.Section(Element.Text('扔出指定面数的骰子，默认掷出六面骰。')),
                          color='#dddddd')
-            elif arg in ['关于', 'about']:
-                c = Card(Module.Header(Element.Text('指令：/关于')),
-                         Module.Section(Element.Text('别名：About')),
+            elif arg in ['about', '关于']:
+                c = Card(Module.Header(Element.Text('指令：/about')),
+                         Module.Section(Element.Text('别名：关于')),
                          Module.Section(Element.Text('接受参数类型：`None`')),
                          Module.Section(Element.Text('查看关于 Bot 的详细信息。')),
                          color='#dddddd')
@@ -102,7 +103,7 @@ def initCommands(bot: Bot) -> None:
     @bot.command(name='点歌', case_sensitive=False)
     async def getMusic(msg: Message, *args):
         await msg.reply('该功能暂未实现，抱歉！', use_quote=False)
-        music_name = " ".join(args)
+        music_name = ' '.join(args)
         if music_name:
             # Code Here.
             ...
@@ -111,7 +112,25 @@ def initCommands(bot: Bot) -> None:
             msg.reply('歌曲名不能为空！', use_quote=False)
         addLog(f'[CMD]用户{msg.author_id}：点歌，传参为{args}')
 
-    @bot.command(name='随机涩图', aliases=['setu', '随机色图', '来点图图', '来点色图', '来点涩图'], case_sensitive=False)
+    @bot.command(name='导入歌单', case_sensitive=False)
+    async def getMusic(msg: Message, *args):
+        await msg.reply('该功能暂未实现，抱歉！', use_quote=False)
+        music = ''.join(args)
+        try:
+            music_id = int(music)
+            # Code Here.
+            ...
+            # Code Here.
+        except ValueError:
+            music_url = music
+            # Code Here.
+            ...
+            # Code Here.
+        except:
+            msg.reply('输入格式错误！', use_quote=False)
+        addLog(f'[CMD]用户{msg.author_id}：导入歌单，传参为{args}')
+
+    @bot.command(name='setu', aliases=['随机涩图', '随机色图', '来点图图', '来点色图', '来点涩图'], case_sensitive=False)
     async def getPic(msg: Message, *args):
         expr = ''.join(args)
         tags = splitExpr(expr)
@@ -128,7 +147,7 @@ def initCommands(bot: Bot) -> None:
         await msg.reply(img_info, use_quote=False)
         addLog(f'[CMD]用户{msg.author_id}：随机涩图，传参为{args}')
 
-    @bot.command(name='扔骰子', aliases=['dice', '掷骰子'], case_sensitive=False)
+    @bot.command(name='dice', aliases=['扔骰子', '掷骰子'], case_sensitive=False)
     async def getDice(msg: Message, *args):
         if args:
             try:
@@ -141,20 +160,20 @@ def initCommands(bot: Bot) -> None:
         await msg.reply(t, use_quote=False)
         addLog(f'[CMD]用户{msg.author_id}：扔骰子，传参为{args}')
 
-    @bot.command(name='关于', aliases=['about'], case_sensitive=False)
+    @bot.command(name='about', aliases=['关于'], case_sensitive=False)
     async def getAbout(msg: Message, *args):
         img_url = await bot.client.create_asset(f'.{os.sep}images{os.sep}rowin.jpg')
-        c = Card(Module.Header(Element.Text(f'关于 {g_name} Bot')),
+        c = Card(Module.Header(Element.Text(f'关于 {NAME} Bot')),
                  Module.Divider(),
-                 Module.Section(Element.Text(f'**Version:** {g_ver}\n**Creator:** 落云Rowin'),
+                 Module.Section(Element.Text(f'**Version:**  {VER}\n**Creator:**  [落云Rowin](https://space.bilibili.com/431882678)（猫猫）'),
                                 Element.Image(src=img_url)),
                  color='#dddddd')
         await msg.reply(CardMessage(c), use_quote=False)
         addLog(f'[CMD]用户{msg.author_id}：关于，传参为{args}')
 
-    @bot.command(name='机器人下线', aliases=['exit'], case_sensitive=False)
+    @bot.command(name='exit', aliases=['机器人下线'], case_sensitive=False)
     async def offBot(msg: Message, *args):
-        if msg.author_id in g_admin:
+        if msg.author_id in ADMIN:
             await msg.reply('Bot 已成功下线。', use_quote=False)
             await bot.client.offline()
             addLog(f'[CMD]用户{msg.author_id}：机器人下线，传参为{args}')
@@ -167,8 +186,8 @@ def initCommands(bot: Bot) -> None:
 
     @bot.command(name='debug', aliases=['test'], case_sensitive=False, prefixes=['//'])
     async def debugFunc(msg: Message, *args):
-        if msg.author_id in g_admin:
+        if msg.author_id in ADMIN:
             addLog(f'[DEB]"debugFunc()" was called by {msg.author_id}, with args {args}.".')
-            debug_channel = await bot.client.fetch_public_channel(g_debug)
+            debug_channel = await bot.client.fetch_public_channel(DEBUG)
             log_url = await bot.client.create_asset(f'.{os.sep}log{os.sep}{logName()}.log')
             await debug_channel.send(log_url, type=MessageTypes.FILE)
