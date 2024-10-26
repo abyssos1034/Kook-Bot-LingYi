@@ -1,7 +1,6 @@
 __pycache__/
 Bot/
-images/pic/
-images/qqalbum/
+images/
 log/
 plugins/__pycache__/
 *.json

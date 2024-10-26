@@ -11,7 +11,8 @@ from .music import *
 
 def initCommands(bot: Bot) -> None:
     @bot.command(name='help', aliases=['帮助', '机器人帮助'], case_sensitive=False)
-    async def showHelp(msg: Message, *args: str):
+    async def cmdHelp(msg: Message, *args: str):
+        addLog(f'[CMD]用户{msg.author_id}：帮助，传参为{args}')
         if not args:
             c = Card(Module.Header(Element.Text('Bot 指令帮助')),
                      Module.Divider(),
@@ -87,16 +88,16 @@ def initCommands(bot: Bot) -> None:
                 c = Card(Module.Section(Element.Text(f'不存在关于`{arg}`的指令帮助。')),
                          color='#dddddd')
         await msg.reply(CardMessage(c), use_quote=False)
-        addLog(f'[CMD]用户{msg.author_id}：帮助，传参为{args}')
 
     @bot.command(name='fortune', aliases=['lucky', '今日人品'], case_sensitive=False)
-    async def getLucky(msg: Message, *args):
+    async def cmdLucky(msg: Message, *args):
+        addLog(f'[CMD]用户{msg.author_id}：今日人品，传参为{args}')
         d_lucky = lucky(Message.author)
         await msg.reply(luckyText(d_lucky))
-        addLog(f'[CMD]用户{msg.author_id}：今日人品，传参为{args}')
 
     @bot.command(name='music', aliases=['点歌'], case_sensitive=False)
-    async def getMusic(msg: Message, *args):
+    async def cmdMusic(msg: Message, *args):
+        addLog(f'[CMD]用户{msg.author_id}：点歌，传参为{args}')
         await msg.reply('该功能暂未实现，抱歉！', use_quote=False)
         music_name = ' '.join(args)
         if music_name:
@@ -117,19 +118,24 @@ def initCommands(bot: Bot) -> None:
                     # Code Here.
                     ...
                     # Code Here.
-                    msg.reply('点歌模式已关闭。', use_quote=False)
+                    await msg.reply('点歌模式已关闭。', use_quote=False)
                 elif music_name.lower() in ['开', 'on']:
                     await msg.reply('你无法打开本来就已经打开的东西。ヽ(#`Д´)ﾉ', use_quote=False)
                 else:
-                    # Code Here.
-                    ...
-                    # Code Here.
+                    music_info = await getMusic(bot, music_name)
+                    c = Card(Module.Section(Element.Text(f'已将歌曲 **{music_info.get("music_name")}** 加入播放列表。'),
+                                            Element.Text(f'**歌手：**{music_info.get("singer")}'),
+                                            Element.Text(f'**时长：**{music_info.get("interval")}'),
+                                            Element.Text(f'**专辑：**{music_info.get("album")}'),
+                                            Element.Image(src='')),
+                             color='#dddddd')
+                    await msg.reply(c, use_quote=False)
         else:
             await msg.reply('歌曲名不能为空！', use_quote=False)
-        addLog(f'[CMD]用户{msg.author_id}：点歌，传参为{args}')
 
     @bot.command(name='setu', aliases=['随机涩图', '随机色图', '来点图图', '来点色图', '来点涩图'], case_sensitive=False)
-    async def getPic(msg: Message, *args):
+    async def cmdPic(msg: Message, *args):
+        addLog(f'[CMD]用户{msg.author_id}：随机涩图，传参为{args}')
         expr = ''.join(args)
         tags = splitExpr(expr)
         content = requests.post(url='https://api.lolicon.app/setu/v2',
@@ -143,10 +149,10 @@ def initCommands(bot: Bot) -> None:
         i_url = await img_upload(bot, img_url)
         await msg.reply(i_url, type=MessageTypes.IMG, use_quote=False)
         await msg.reply(img_info, use_quote=False)
-        addLog(f'[CMD]用户{msg.author_id}：随机涩图，传参为{args}')
 
     @bot.command(name='dice', aliases=['扔骰子', '掷骰子'], case_sensitive=False)
-    async def getDice(msg: Message, *args):
+    async def cmdDice(msg: Message, *args):
+        addLog(f'[CMD]用户{msg.author_id}：扔骰子，传参为{args}')
         if args:
             try:
                 n = int(args[0])
@@ -156,30 +162,30 @@ def initCommands(bot: Bot) -> None:
         else:
             t = newDice()
         await msg.reply(t, use_quote=False)
-        addLog(f'[CMD]用户{msg.author_id}：扔骰子，传参为{args}')
 
     @bot.command(name='about', aliases=['关于'], case_sensitive=False)
-    async def getAbout(msg: Message, *args):
-        img_url = await bot.client.create_asset(f'.{os.sep}images{os.sep}rowin.jpg')
+    async def cmdAbout(msg: Message, *args):
+        addLog(f'[CMD]用户{msg.author_id}：关于，传参为{args}')
         c = Card(Module.Header(Element.Text(f'关于 {NAME} Bot')),
                  Module.Divider(),
-                 Module.Section(Element.Text(f'**Version:**  {VER}\n**Creator:**  [落云Rowin](https://github.com/RowinNyan)（a.k.a. 猫猫）'),
-                                Element.Image(src=img_url)),
+                 Module.Section(Element.Text(f'{DESCR}', type=Types.Text.PLAIN),
+                                Element.Image(src='https://img.kookapp.cn/assets/2024-10/tKYazD9l6i0k00k0.png')),
+                 Module.Divider(),
+                 Module.Section(Element.Text(f'**版本：**{VER}**\n制作：**{DEV}'),
+                                Element.Image(src='https://img.kookapp.cn/attachments/2024-10/10/lXwQbUcYOe0dw0dw.jpeg')),
                  color='#dddddd')
         await msg.reply(CardMessage(c), use_quote=False)
-        addLog(f'[CMD]用户{msg.author_id}：关于，传参为{args}')
 
     @bot.command(name='exit', aliases=['机器人下线'], case_sensitive=False)
-    async def offBot(msg: Message, *args):
+    async def cmdOffline(msg: Message, *args):
+        addLog(f'[CMD]用户{msg.author_id}：机器人下线，传参为{args}')
         if msg.author_id in ADMIN:
             await msg.reply('Bot 已成功下线。', use_quote=False)
             await bot.client.offline()
-            addLog(f'[CMD]用户{msg.author_id}：机器人下线，传参为{args}')
             addLog(f'[BOT]Bot已关闭\n')
             os._exit(0)
         else:
             await msg.reply('杂鱼～你觉得你有权限吗？')
-            addLog(f'[CMD]用户{msg.author_id}：机器人下线，传参为{args}')
             addLog(f'[ERR]用户权限不足')
 
     @bot.command(name='debug', aliases=['test'], case_sensitive=False, prefixes=['//'])
