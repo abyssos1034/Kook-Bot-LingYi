@@ -1,8 +1,10 @@
 import requests, json
-from .globals import g_token as token
 
-KOOK_INTIMACY_API = 'https://www.kookapp.cn/api/v3/intimacy/'
-HEADERS = {'Authorization': f'Bot {token}',
+from .globals import *
+from .exceptions import *
+
+KOOK_INTIMACY_API = f'{KOOK_API_BASE}intimacy/'
+HEADERS = {'Authorization': f'Bot {TOKEN}',
            'Content-type': 'application/json;'}
 
 def intimacyGet(user_id: str) -> int:
@@ -12,16 +14,18 @@ def intimacyGet(user_id: str) -> int:
         score = content['data']['score']
         return score
     else:
-        raise Exception(content.get('message', 'UnknownError'))
+        raise ResponseError(content.get('code', -1))
 
 def intimacyUpdate(user_id: str,
                    social_info: str = 'default',
                    score: int = 0,
                    img_id: int = 0) -> None:
     data = locals()
-    r = requests.post(url=f'{KOOK_INTIMACY_API}update', headers=HEADERS, data=json.dumps(data, ensure_ascii=False))
+    r = requests.post(url=f'{KOOK_INTIMACY_API}update',
+                      headers=HEADERS,
+                      data=json.dumps(data, ensure_ascii=False))
     content: dict = json.loads(r.content)
     if content.get('code', -1) == 0:
         pass
     else:
-        raise Exception(content.get('message', 'UnknownError'))
+        raise ResponseError(content.get('code', -1))

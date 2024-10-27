@@ -11,8 +11,9 @@ DEV  : str  = data.get('developer')
 TOKEN: str  = data.get('token')
 ADMIN: list = data.get('admin')
 DEBUG: str  = data.get('debug_channel')
-MUSIC: dict = data.get('music_channel')
+MUSIC: str  = data.get('music_channel')
 del data
 
-lucky_list: dict[User, int] = {}
-music_playing: bool = False
+KOOK_API_BASE = 'https://www.kookapp.cn/api/v3/'
+
+lucky_list: dict[User, int] = dict()
