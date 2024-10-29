@@ -3,12 +3,13 @@ import os
 from khl import Bot, Message, MessageTypes
 from khl.card import Card, CardMessage, Module, Element, Types
 
-from .exceptions import *
-from .log import *
-from .lucky import *
-from .image import *
-from .dice import *
-from .music import *
+from .globals import NAME, DESCR, VER, DEV, ADMIN, DEBUG
+from .exceptions import excHandler, TestException
+from .log import addLog, logName
+from .lucky import lucky, luckyText
+from .image import splitExpr, imgUpload, getImage
+from .dice import newDice
+from .music import joinVoice, getMusic, playMusic
 
 def initCommands(bot: Bot) -> None:
     @bot.command(name='help',
@@ -99,7 +100,7 @@ def initCommands(bot: Bot) -> None:
                  exc_handlers=excHandler())
     async def cmdLucky(msg: Message, *args):
         addLog(f'[CMD]用户{msg.author_id}：今日人品，传参为{args}')
-        d_lucky = lucky(Message.author)
+        d_lucky = lucky(Message.author_id)
         await msg.reply(luckyText(d_lucky))
 
     @bot.command(name='music', aliases=['点歌'], case_sensitive=False, exc_handlers=excHandler())
@@ -140,14 +141,7 @@ def initCommands(bot: Bot) -> None:
                  exc_handlers=excHandler())
     async def cmdDice(msg: Message, *args):
         addLog(f'[CMD]用户{msg.author_id}：扔骰子，传参为{args}')
-        if args:
-            try:
-                n = int(args[0])
-                t = newDice(n)
-            except:
-                t = '不存在这种骰子。'
-        else:
-            t = newDice()
+        t = newDice(*args)
         await msg.reply(t, use_quote=False)
 
     @bot.command(name='about',
@@ -159,7 +153,7 @@ def initCommands(bot: Bot) -> None:
         c = Card(Module.Header(Element.Text(f'关于 {NAME} Bot')),
                  Module.Divider(),
                  Module.Section(Element.Text(f'{DESCR}', type=Types.Text.PLAIN),
-                                Element.Image(src='https://img.kookapp.cn/assets/2024-10/tKYazD9l6i0k00k0.png')),
+                                Element.Image(src='https://img.kookapp.cn/assets/2024-10/WlUkfIxnn50km0km.png')),
                  Module.Divider(),
                  Module.Section(Element.Text(f'**版本：**{VER}**\n制作：**{DEV}'),
                                 Element.Image(src='https://img.kookapp.cn/attachments/2024-10/10/lXwQbUcYOe0dw0dw.jpeg')),

@@ -1,8 +1,7 @@
 from khl import Bot
 
-from .log import *
-from .lucky import *
-from .image import *
+from .log import addLog
+from .lucky import lucky_list
 
 def initCrons(bot: Bot) -> None:
     @bot.task.add_cron(timezone='Asia/Shanghai',

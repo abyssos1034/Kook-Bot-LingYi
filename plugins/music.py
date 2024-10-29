@@ -2,9 +2,8 @@ import requests, json, os
 
 from khl import Bot
 
-from .globals import *
-from .exceptions import *
-from .log import *
+from .globals import KOOK_API_BASE, TOKEN, MUSIC
+from .exceptions import ResponseError
 
 KOOK_VOICE_API = f'{KOOK_API_BASE}voice/'
 QQMUSIC_SEARCH_API = 'https://c.y.qq.com/soso/fcgi-bin/client_search_cp?p=1&w='

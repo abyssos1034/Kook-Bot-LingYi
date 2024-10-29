@@ -1,18 +1,11 @@
 import random
 
-from khl import User
+from .globals import lucky_list
 
-from .globals import *
-
-def lucky(user: User) -> int:
+def lucky(user: str) -> int:
     global lucky_list
-    lucky_value = -1
-    if user in lucky_list:
-        lucky_value = lucky_list[user]
-    else:
-        lucky_value = random.randint(0, 100)
-        lucky_list[user] = lucky_value
-    return lucky_value
+    lucky_list[user] = lucky_list.get(user, random.randint(0, 100))
+    return lucky_list[user]
 
 def luckyText(num: int) -> str:
     text = f'你今天的人品值为：{num}'

@@ -1,6 +1,6 @@
 import requests, json
 
-from .globals import *
+from .globals import KOOK_API_BASE, TOKEN
 from .exceptions import *
 
 KOOK_INTIMACY_API = f'{KOOK_API_BASE}intimacy/'

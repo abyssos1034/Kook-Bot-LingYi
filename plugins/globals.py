@@ -1,7 +1,5 @@
 import json
 
-from khl import User
-
 with open('config.json', 'r', encoding='utf-8') as f:
     data: dict = json.load(f)
 NAME : str  = data.get('name')
@@ -16,4 +14,4 @@ del data
 
 KOOK_API_BASE = 'https://www.kookapp.cn/api/v3/'
 
-lucky_list: dict[User, int] = dict()
+lucky_list: dict[str, int] = dict()

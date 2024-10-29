@@ -1,7 +1,9 @@
 from khl import Bot
 
-from plugins.commands import *
-from plugins.crontasks import *
+from plugins.globals import TOKEN
+from plugins.commands import initCommands
+from plugins.crontasks import initCrons
+from plugins.log import addLog
 
 bot = Bot(token=TOKEN)
 

@@ -1,7 +1,5 @@
 import time, os
 
-from .globals import *
-
 def logName() -> str:
     n_time = time.strftime(f"%Y-%m-%d", time.localtime())
     return n_time

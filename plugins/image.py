@@ -1,8 +1,8 @@
-import requests, os
+import requests, json, os
 
 from khl import Bot
 
-from .log import *
+from .log import addLog
 
 def splitExpr(expr: str) -> list[list]:
     output = []
