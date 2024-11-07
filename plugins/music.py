@@ -1,17 +1,20 @@
-import requests, json, os
+import requests, json
 
 from khl import Bot
 
-from .globals import KOOK_API_BASE, TOKEN, MUSIC
-from .exceptions import ResponseError
+from .exceptions import Error
 
-KOOK_VOICE_API = f'{KOOK_API_BASE}voice/'
 QQMUSIC_SEARCH_API = 'https://c.y.qq.com/soso/fcgi-bin/client_search_cp?p=1&w='
 QQMUSIC_CLIENT_SONG_API = 'https://u.y.qq.com/cgi-bin/musicu.fcg'
 QQMUSIC_SONG_BASICURL = 'http://dl.stream.qqmusic.qq.com/'
 QQMUSIC_SONG_COVER = 'http://y.qq.com/music/photo_new/T002R300x300M000{id}.jpg'
 
-def searchMusic(music_name: str) -> list[dict[str, ]]:
+def secToTime(second: int) -> str:
+    min = second // 60
+    sec = second % 60
+    return '%02d:%02d' % (min, sec)
+
+async def searchMusic(music_name: str) -> list[dict[str, str]]:
     output = list()
     r = requests.get(url=f'{QQMUSIC_SEARCH_API}{music_name}')
     content: dict = json.loads(r.content.decode('utf-8')[9:-1])
@@ -26,16 +29,16 @@ def searchMusic(music_name: str) -> list[dict[str, ]]:
                 'music_name': music_info.get('songname', '未知歌曲'),
                 'music_id': music_info.get('songmid', ''),
                 'singer': singer,
-                'interval': music_info.get('interval', 0) * 1000,
+                'interval': secToTime(music_info.get('interval', 0)),
                 'album_name': music_info.get('albumname', '未知专辑'),
                 'album_id': music_info.get('albummid', '')
             })
         return output
     else:
-        raise ResponseError(content.get('code', -1))
+        raise Error.ResponseError(content.get('code', -1))
 
-async def getMusic(bot: Bot, music_name: str) -> dict[str, ]:
-    music_list = searchMusic(music_name)
+async def getMusic(bot: Bot, music_name: str) -> dict[str, str]:
+    music_list = await searchMusic(music_name)
     for music_info in music_list:
         data = {
             'vkey.GetVkeyServer': {
@@ -67,36 +70,3 @@ async def getMusic(bot: Bot, music_name: str) -> dict[str, ]:
                     'url': music_url,
                     'cover': cover_url
                 }
-
-DATA = {'channel_id': MUSIC}
-HEADERS = {'Authorization': f'Bot {TOKEN}',
-           'Content-type': 'application/json;'}
-
-def joinVoice() -> dict[str, ]:
-    r = requests.post(url=f'{KOOK_VOICE_API}join/', data=json.dumps(DATA, ensure_ascii=False), headers=HEADERS)
-    content: dict = json.loads(r.content)
-    if content.get('code', -1) == 0:
-        return content.get('data')
-    else:
-        raise ResponseError(content.get('code', -1))
-
-def leaveVoice() -> dict[str, ]:
-    r = requests.post(url=f'{KOOK_VOICE_API}leave/', data=json.dumps(DATA, ensure_ascii=False), headers=HEADERS)
-    content: dict = json.loads(r.content)
-    if content.get('code', -1) == 0:
-        return content.get('data')
-    else:
-        raise ResponseError(content.get('code', -1))
-
-def playMusic(url: str,
-              ip: str,
-              port: str,
-              rtcp_port: str,
-              rtcp_mux: bool,
-              bitrate: int,
-              audio_ssrc: str,
-              audio_pt: str) -> None:
-    if rtcp_mux:
-        os.system(f".\\ffmpeg\\ffmpeg -i \"{url}\" -re -map \"0:a:0\" -acodec libopus -ab {bitrate} -ac 2 -ar {bitrate} -filter:a \"volume=0.8\" -f tee \"[select=a:f=rtp:ssrc={audio_ssrc}:payload_type={audio_pt}]rtp://{ip}:{port}\"")
-    else:
-        os.system(f".\\ffmpeg\\ffmpeg -i \"{url}\" -re -map \"0:a:0\" -acodec libopus -ab {bitrate} -ac 2 -ar {bitrate} -filter:a \"volume=0.8\" -f tee \"[select=a:f=rtp:ssrc={audio_ssrc}:payload_type={audio_pt}]rtp://{ip}:{port}?rtcpport={rtcp_port}\"")
