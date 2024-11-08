@@ -1,7 +1,7 @@
 import requests, json
 
 from .globals import KOOK_API_BASE, TOKEN
-from .exceptions import Error
+from .exceptions import Exceptions
 
 KOOK_INTIMACY_API = f'{KOOK_API_BASE}intimacy/'
 HEADERS = {'Authorization': f'Bot {TOKEN}',
@@ -14,7 +14,7 @@ def intimacyGet(user_id: str) -> int:
         score = content['data']['score']
         return score
     else:
-        raise Error.ResponseError(content.get('code', -1))
+        raise Exceptions.ResponseError(content.get('code', -1))
 
 def intimacyUpdate(user_id: str,
                    social_info: str = 'default',
@@ -28,4 +28,4 @@ def intimacyUpdate(user_id: str,
     if content.get('code', -1) == 0:
         pass
     else:
-        raise Error.ResponseError(content.get('code', -1))
+        raise Exceptions.ResponseError(content.get('code', -1))

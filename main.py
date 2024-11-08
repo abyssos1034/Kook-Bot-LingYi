@@ -7,7 +7,7 @@ from plugins.globals import TOKEN
 from plugins.commands import initCommands
 from plugins.crontasks import initCrons
 from plugins.events import initEvents
-from plugins.log import addLog
+from plugins.logger import addLog
 
 bot = Bot(token=TOKEN)
 kookvoice.set_ffmpeg('.\\ffmpeg\\ffmpeg.exe')

@@ -1,105 +1,25 @@
-import os
-
 from khl import Bot, Message, MessageTypes
 from khl.card import Card, CardMessage, Module, Element, Types
 import kookvoice
 
-from .globals import NAME, DESCR, VER, DEV, ADMIN, DEBUG, TOKEN
-from .exceptions import default_exc_handler, Error
-from .log import log, addLog, logName, findUser
+from .globals import NAME, DESCR, VER, DEV, TOKEN
+from .exceptions import default_exc_handler, Exceptions
+from .logger import logger
 from .lucky import lucky, luckyText
 from .image import splitExpr, imgUpload, getImage
 from .dice import newDice
-from .music import getMusic
+from .music import getMusic, findUser
+from .help import help_command
+from .debug import debug_command
 
 def initCommands(bot: Bot) -> None:
-    @bot.command(name='help',
-                 aliases=['帮助', '机器人帮助'],
-                 case_sensitive=False,
-                 exc_handlers=default_exc_handler)
-    @log
-    async def cmdHelp(msg: Message, *args: str):
-        if not args:
-            c = Card(Module.Header(Element.Text('Bot 指令帮助')),
-                     Module.Divider(),
-                     Module.Section(Element.Text('`/help <指令名称或别名>`')),
-                     Module.Section(Element.Text('别名：帮助、机器人帮助')),
-                     Module.Section(Element.Text('查看 Bot 指令帮助，或查看关于某指令的详细帮助。')),
-                     Module.Divider(),
-                     Module.Section(Element.Text('`/fortune`')),
-                     Module.Section(Element.Text('别名：lucky、今日人品')),
-                     Module.Section(Element.Text('查询今日人品。')),
-                     Module.Divider(),
-                     Module.Section(Element.Text('`/music <歌曲名>`')),
-                     Module.Section(Element.Text('别名：点歌')),
-                     Module.Section(Element.Text('将指定歌曲加入播放列表中。')),
-                     Module.Divider(),
-                     Module.Section(Element.Text('`/setu <表达式>`')),
-                     Module.Section(Element.Text('别名：随机涩图、随机色图、来点图图、来点色图、来点涩图')),
-                     Module.Section(Element.Text('让 Bot 发送随机涩图，或通过表达式让 Bot 发送指定Tag的涩图。')),
-                     Module.Divider(),
-                     Module.Section(Element.Text('`/dice [4|6|8|10|12|20|100]`')),
-                     Module.Section(Element.Text('别名：扔骰子、掷骰子')),
-                     Module.Section(Element.Text('扔出指定面数的骰子，默认掷出六面骰。')),
-                     Module.Divider(),
-                     Module.Section(Element.Text('`/about`')),
-                     Module.Section(Element.Text('别名：关于')),
-                     Module.Section(Element.Text('查看关于 Bot 的详细信息。')),
-                     Module.Divider(),
-                     color='#3498db')
-        else:
-            arg = ' '.join(args).lower()
-            if arg in ['help', '帮助', '机器人帮助']:
-                c = Card(Module.Header(Element.Text('指令：/help <指令名称或别名>')),
-                         Module.Section(Element.Text('别名：帮助、机器人帮助')),
-                         Module.Section(Element.Text('接受参数类型：`None|str`')),
-                         Module.Section(Element.Text('查看 Bot 指令帮助，或查看关于某指令的详细帮助。')),
-                         color='#3498db')
-            elif arg in ['fortune', 'lucky', '今日人品']:
-                c = Card(Module.Header(Element.Text('指令：/今日人品')),
-                         Module.Section(Element.Text('接受参数类型：`None`')),
-                         Module.Section(Element.Text('查询今日人品，返回值为0-100的随机整数，当天某特定用户的数值不变。')),
-                         color='#3498db')
-            elif arg in ['music', '点歌']:
-                c = Card(Module.Header(Element.Text('指令：/点歌 <歌曲名>')),
-                         Module.Section(Element.Text('接受参数类型：`str|tuple`')),
-                         Module.Section(Element.Text('示例：`/点歌 春日影`')),
-                         Module.Section(Element.Text('将指定歌曲加入播放列表中。')),
-                         color='#3498db')
-            elif arg in ['setu', '随机涩图', '随机色图', '来点图图', '来点色图', '来点涩图']:
-                c = Card(Module.Header(Element.Text('指令：/setu <表达式>')),
-                         Module.Section(Element.Text('别名：随机涩图、随机色图、来点图图、来点色图、来点涩图')),
-                         Module.Section(Element.Text('接受参数类型：`None|str|tuple`')),
-                         Module.Section(Element.Text('示例：`/setu 原神|明日方舟&白丝|黑丝`')),
-                         Module.Section(Element.Text('注1：表达式中的**或运算**比**与运算**的优先级更高，且不支持使用小括号。')),
-                         Module.Section(Element.Text('注2：支持的**或运算符**：`|、||、or`，支持的**与运算符**：`&、&&、and`')),
-                         Module.Section(Element.Text('让 Bot 发送随机涩图，或通过表达式让 Bot 发送指定Tag的随机涩图。')),
-                         Module.Section(Element.Text('此处使用`https://api.lolicon.app/setu/v2`这一api。')),
-                         color='#3498db')
-            elif arg in ['dice', '扔骰子', '掷骰子']:
-                c = Card(Module.Header(Element.Text('指令：/dice [4|6|8|10|12|20|100]')),
-                         Module.Section(Element.Text('别名：扔骰子、掷骰子')),
-                         Module.Section(Element.Text('接受参数类型：`None|int`')),
-                         Module.Section(Element.Text('扔出指定面数的骰子，默认掷出六面骰。')),
-                         color='#3498db')
-            elif arg in ['about', '关于']:
-                c = Card(Module.Header(Element.Text('指令：/about')),
-                         Module.Section(Element.Text('别名：关于')),
-                         Module.Section(Element.Text('接受参数类型：`None`')),
-                         Module.Section(Element.Text('查看关于 Bot 的详细信息。')),
-                         color='#3498db')
-            else:
-                c = Card(Module.Section(Element.Text(f'不存在关于`{arg}`的指令帮助。')),
-                         color='#3498db')
-        await msg.reply(CardMessage(c), use_quote=False)
-
     @bot.command(name='fortune',
                  aliases=['lucky', '今日人品'],
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
-    @log
+    @logger
     async def cmdFortune(msg: Message, *args):
-        if args: raise Error.ParameterError('None')
+        if args: raise Exceptions.ParameterException('None')
         d_lucky = lucky(msg.author_id)
         await msg.reply(luckyText(d_lucky))
 
@@ -107,7 +27,7 @@ def initCommands(bot: Bot) -> None:
                  aliases=['点歌'],
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
-    @log
+    @logger
     async def cmdMusic(msg: Message, *args):
         music_name = ' '.join(args)
         if music_name:
@@ -132,8 +52,9 @@ def initCommands(bot: Bot) -> None:
                  aliases=['跳过'],
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
-    @log
+    @logger
     async def cmdSkip(msg: Message, *args):
+        if args: raise Exceptions.ParameterException('None')
         player = kookvoice.Player(msg.ctx.guild.id)
         player.skip()
         await msg.reply('歌曲已跳过。', use_quote=False)
@@ -142,7 +63,7 @@ def initCommands(bot: Bot) -> None:
                  aliases=['随机涩图', '随机色图', '来点图图', '来点色图', '来点涩图'],
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
-    @log
+    @logger
     async def cmdSetu(msg: Message, *args):
         expr = ''.join(args)
         tags = splitExpr(expr)
@@ -156,7 +77,7 @@ def initCommands(bot: Bot) -> None:
                  aliases=['扔骰子', '掷骰子'],
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
-    @log
+    @logger
     async def cmdDice(msg: Message, *args):
         t = newDice(*args)
         await msg.reply(t, use_quote=False)
@@ -165,9 +86,9 @@ def initCommands(bot: Bot) -> None:
                  aliases=['关于'],
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
-    @log
+    @logger
     async def cmdAbout(msg: Message, *args):
-        if args: raise Error.ParameterError('None')
+        if args: raise Exceptions.ParameterException('None')
         c = Card(Module.Header(Element.Text(f'关于 {NAME} Bot')),
                  Module.Divider(),
                  Module.Section(Element.Text(f'{DESCR}', type=Types.Text.PLAIN),
@@ -178,37 +99,5 @@ def initCommands(bot: Bot) -> None:
                  color='#3498db')
         await msg.reply(CardMessage(c), use_quote=False)
 
-    @bot.command(name='exit',
-                 aliases=['机器人下线'],
-                 case_sensitive=False,
-                 exc_handlers=default_exc_handler)
-    @log
-    async def cmdExit(msg: Message, *args):
-        if msg.author_id in ADMIN:
-            await msg.reply('Bot 已成功下线。', use_quote=False)
-            await bot.client.offline()
-            addLog(f'[BOT]Bot已关闭\n')
-            os._exit(0)
-        else:
-            await msg.reply('Bot 下线失败。原因：用户权限不足。')
-            addLog(f'[ERR]用户权限不足')
-
-    @bot.command(name='test',
-                 case_sensitive=False,
-                 prefixes=['//'],
-                 exc_handlers=default_exc_handler)
-    @log
-    async def testFunc(msg: Message, *args):
-        await msg.reply(f'{args}', use_quote=False)
-        raise Error.TestException('这是一条测试信息。')
-
-    @bot.command(name='debug',
-                 case_sensitive=False,
-                 prefixes=['//'],
-                 exc_handlers=default_exc_handler)
-    @log
-    async def debugFunc(msg: Message, *args):
-        if msg.author_id in ADMIN:
-            debug_channel = await bot.client.fetch_public_channel(DEBUG)
-            log_url = await bot.client.create_asset(f'.\\log\\{logName()}.log')
-            await debug_channel.send(log_url, type=MessageTypes.FILE)
+    help_command(bot)
+    debug_command(bot)

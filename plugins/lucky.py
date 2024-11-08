@@ -1,6 +1,6 @@
 import random
 
-from .globals import lucky_list
+lucky_list: dict[str, int] = dict()
 
 def lucky(user: str) -> int:
     global lucky_list

@@ -1,8 +1,9 @@
-import requests, json, os
+import requests, json, os, subprocess
 
 from khl import Bot
 
-from .log import addLog
+from .logger import addLog
+from .exceptions import Exceptions
 
 def splitExpr(expr: str) -> list[list]:
     output = []
@@ -21,6 +22,15 @@ async def imgUpload(bot: Bot, img_url: str, img_name: str) -> str:
                 f.write(chunk)
         addLog(f'[FIL]已创建新文件"{path}"')
     i_url = await bot.client.create_asset(path)
+    try:
+        result = subprocess.run(
+            ["rm", path],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=True
+        )
+    except subprocess.CalledProcessError as e:
+        raise Exceptions.TerminalError(f'未能成功删除文件"{path}"')
     return i_url
 
 def getImage(tags: list[list]) -> dict[str, str]:

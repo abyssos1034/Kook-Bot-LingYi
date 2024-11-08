@@ -2,7 +2,7 @@ import requests, json
 
 from khl import Bot
 
-from .exceptions import Error
+from .exceptions import Exceptions
 
 QQMUSIC_SEARCH_API = 'https://c.y.qq.com/soso/fcgi-bin/client_search_cp?p=1&w='
 QQMUSIC_CLIENT_SONG_API = 'https://u.y.qq.com/cgi-bin/musicu.fcg'
@@ -35,7 +35,7 @@ async def searchMusic(music_name: str) -> list[dict[str, str]]:
             })
         return output
     else:
-        raise Error.ResponseError(content.get('code', -1))
+        raise Exceptions.ResponseError(content.get('code', -1))
 
 async def getMusic(bot: Bot, music_name: str) -> dict[str, str]:
     music_list = await searchMusic(music_name)
@@ -70,3 +70,11 @@ async def getMusic(bot: Bot, music_name: str) -> dict[str, str]:
                     'url': music_url,
                     'cover': cover_url
                 }
+
+async def findUser(bot: Bot, gid: str, aid: str) -> str:
+    voice_channel_ = await bot.client.gate.request('GET', 'channel-user/get-joined-channel',
+                                                   params={'guild_id': gid, 'user_id': aid})
+    voice_channel = voice_channel_["items"]
+    if voice_channel:
+        vcid = voice_channel[0]['id']
+        return vcid
