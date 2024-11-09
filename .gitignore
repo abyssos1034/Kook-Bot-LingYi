@@ -1,7 +1,6 @@
-__pycache__/
 bot/
 temp/
 log/
+__pycache__/
 plugins/__pycache__/
 *.json
-launch.bat

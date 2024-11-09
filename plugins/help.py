@@ -96,4 +96,3 @@ def help_command(bot: Bot) -> None:
                 c = Card(Module.Section(Element.Text(f'不存在关于`{arg}`的指令帮助。')),
                          color='#3498db')
         await msg.reply(CardMessage(c), use_quote=False)
-
