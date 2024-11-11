@@ -1,3 +1,4 @@
+import sys
 from functools import wraps
 from typing import Callable
 
@@ -38,6 +39,7 @@ def debug_command(bot: Bot) -> None:
                 await debug_channel.send('Bot 已成功下线。')
                 await bot.client.offline()
                 addLog(f'[BOT]Bot已关闭\n')
+                sys.exit()
             elif arg == 'error':
                 raise Exceptions.DebugException(' '.join(args[1:]))
             else:
