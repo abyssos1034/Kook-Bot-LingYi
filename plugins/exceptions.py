@@ -84,7 +84,7 @@ async def catchException(cmd: command.Command,
         c = Card(Module.Header(Element.Text('发生了一个未知错误')),
                  Module.Divider(),
                  Module.Section(Element.Text(f'发生了一个未知错误：`{str(type(exc))[8:-2]}`。')),
-                 Module.Section(Element.Text(f'错误信息：{exc}。')),
+                 Module.Section(Element.Text(f'错误信息：{exc}')),
                  Module.Section(Element.Text('请重试。如果无法解决，请联系开发者。')),
                  color='#dd3333')
     await msg.reply(CardMessage(c), use_quote=False)

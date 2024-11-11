@@ -18,17 +18,17 @@ def initCommands(bot: Bot) -> None:
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
     @logger
-    async def cmdFortune(msg: Message, *args):
+    async def cmdFortune(msg: Message, *args: str):
         if args: raise Exceptions.ParameterException('None')
         d_lucky = lucky(msg.author_id)
-        await msg.reply(luckyText(d_lucky))
+        await msg.reply(luckyText(d_lucky), use_quote=False)
 
     @bot.command(name='music',
                  aliases=['点歌'],
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
     @logger
-    async def cmdMusic(msg: Message, *args):
+    async def cmdMusic(msg: Message, *args: str):
         music_name = ' '.join(args)
         if music_name:
             vid = await findUser(bot, msg.ctx.guild.id, msg.author_id)
@@ -53,7 +53,7 @@ def initCommands(bot: Bot) -> None:
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
     @logger
-    async def cmdSkip(msg: Message, *args):
+    async def cmdSkip(msg: Message, *args: str):
         if args: raise Exceptions.ParameterException('None')
         player = kookvoice.Player(msg.ctx.guild.id)
         player.skip()
@@ -64,7 +64,7 @@ def initCommands(bot: Bot) -> None:
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
     @logger
-    async def cmdSetu(msg: Message, *args):
+    async def cmdSetu(msg: Message, *args: str):
         expr = ''.join(args)
         tags = splitExpr(expr)
         img_info = getImage(tags)
@@ -78,7 +78,7 @@ def initCommands(bot: Bot) -> None:
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
     @logger
-    async def cmdDice(msg: Message, *args):
+    async def cmdDice(msg: Message, *args: str):
         t = newDice(*args)
         await msg.reply(t, use_quote=False)
 
@@ -87,7 +87,7 @@ def initCommands(bot: Bot) -> None:
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
     @logger
-    async def cmdAbout(msg: Message, *args):
+    async def cmdAbout(msg: Message, *args: str):
         if args: raise Exceptions.ParameterException('None')
         c = Card(Module.Header(Element.Text(f'关于 {NAME} Bot')),
                  Module.Divider(),
