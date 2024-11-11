@@ -35,8 +35,8 @@ def debug_command(bot: Bot) -> None:
                 await debug_channel.send(log_url, type=MessageTypes.FILE)
                 await debug_channel.send(err_url, type=MessageTypes.FILE)
             elif arg == 'off':
-                await bot.client.offline()
                 await debug_channel.send('Bot 已成功下线。')
+                await bot.client.offline()
                 addLog(f'[BOT]Bot已关闭\n')
             elif arg == 'error':
                 raise Exceptions.DebugException(' '.join(args[1:]))
