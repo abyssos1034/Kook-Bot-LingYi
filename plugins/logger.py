@@ -10,7 +10,7 @@ def logger(func: Callable):
         heads = {'cmd': '[CMD]'}
         author: GuildUser = msg.author
         head = heads.get(func.__name__[:3], '[DEB]')
-        addLog(f'{head}{author.nickname}({author.id}): 调用函数{func.__name__}()，附加信息为{" ".join(args)}')
+        addLog(f'{head}{author.nickname}({author.id}): 调用函数{func.__name__}()，附加信息为\"{" ".join(args)}\"')
         try:
             result = await func(msg, *args)
             return result

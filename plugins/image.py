@@ -1,4 +1,4 @@
-import requests, json, os, subprocess
+import requests, json, os
 
 from khl import Bot
 
@@ -22,14 +22,8 @@ async def imgUpload(bot: Bot, img_url: str, img_name: str) -> str:
                 f.write(chunk)
         addLog(f'[FIL]已创建新文件"{path}"')
     i_url = await bot.client.create_asset(path)
-    try:
-        result = subprocess.run(
-            ["rm", path],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=True
-        )
-    except subprocess.CalledProcessError as e:
+    try: os.remove(path)
+    except Exception:
         raise Exceptions.TerminalError(f'未能成功删除文件"{path}"')
     return i_url
 
