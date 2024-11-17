@@ -4,3 +4,5 @@ log/
 __pycache__/
 plugins/__pycache__/
 *.json
+*.bat
+*.ps1
