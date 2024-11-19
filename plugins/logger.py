@@ -4,12 +4,12 @@ from typing import Callable
 
 from khl import Message, GuildUser
 
-def logger(func: Callable):
+def cmdLogger(func: Callable):
     @wraps(func)
     async def wrapper(msg: Message, *args):
-        heads = {'cmd': '[CMD]'}
+        heads = {'cmd': '[UCMD]'}
         author: GuildUser = msg.author
-        head = heads.get(func.__name__[:3], '[DEB]')
+        head = heads.get(func.__name__[:3], '[DCMD]')
         addLog(f'{head}{author.nickname}({author.id}): 调用函数{func.__name__}()，附加信息为\"{" ".join(args)}\"')
         try:
             result = await func(msg, *args)

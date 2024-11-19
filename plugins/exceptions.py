@@ -54,7 +54,7 @@ def errorLog(func: Callable) -> None:
 async def catchException(cmd: command.Command,
                          exc: Exception,
                          msg: Message) -> None:
-    addLog(f'[EXC]执行命令 {cmd.name} 时发生错误：{str(type(exc))[8:-2]}，错误信息为：{exc}')
+    addLog(f'[EXCP]执行命令 {cmd.name} 时发生错误：{str(type(exc))[8:-2]}，错误信息为：{exc}')
     if isinstance(exc, Exceptions.BaseException):
         if isinstance(exc, Exceptions.ResponseError):
             c = Card(Module.Header(Element.Text('发生网络错误')),

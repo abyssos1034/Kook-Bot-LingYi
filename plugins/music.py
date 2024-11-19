@@ -53,7 +53,12 @@ async def getMusic(bot: Bot, music_name: str) -> dict[str, str]:
                 }
             }
         }
-        r = requests.post(url=QQMUSIC_CLIENT_SONG_API, data=json.dumps(data, ensure_ascii=False))
+        with open('.\\temp\\qqmusic\\token.txt', 'r', encoding='utf-8') as file:
+            for line in file:
+                cookie = line
+        r = requests.post(url=QQMUSIC_CLIENT_SONG_API,
+                          data=json.dumps(data, ensure_ascii=False),
+                          headers={'Cookie': cookie})
         content: dict = json.loads(r.content)
         if content.get('code', -1) == 0:
             purl = content['vkey.GetVkeyServer']['data']['midurlinfo'][0]['purl']

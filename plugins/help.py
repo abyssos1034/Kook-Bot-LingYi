@@ -1,7 +1,7 @@
 from khl import Bot, Message
 from khl.card import Card, CardMessage, Module, Element
 
-from .logger import logger
+from .logger import cmdLogger
 from .exceptions import default_exc_handler
 
 def help_command(bot: Bot) -> None:
@@ -9,7 +9,7 @@ def help_command(bot: Bot) -> None:
                  aliases=['帮助', '机器人帮助'],
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
-    @logger
+    @cmdLogger
     async def cmdHelp(msg: Message, *args: str):
         if not args:
             c = Card(Module.Header(Element.Text('Bot 指令帮助')),

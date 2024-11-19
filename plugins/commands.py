@@ -4,7 +4,7 @@ import kookvoice
 
 from .globals import NAME, DESCR, VER, DEV, TOKEN
 from .exceptions import default_exc_handler, Exceptions
-from .logger import logger
+from .logger import cmdLogger
 from .lucky import lucky, luckyText
 from .image import splitExpr, imgUpload, getImage
 from .dice import newDice
@@ -17,7 +17,7 @@ def initCommands(bot: Bot) -> None:
                  aliases=['lucky', '今日人品'],
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
-    @logger
+    @cmdLogger
     async def cmdFortune(msg: Message, *args: str):
         if args: raise Exceptions.ParameterException('None')
         d_lucky = lucky(msg.author_id)
@@ -27,7 +27,7 @@ def initCommands(bot: Bot) -> None:
                  aliases=['点歌'],
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
-    @logger
+    @cmdLogger
     async def cmdMusic(msg: Message, *args: str):
         music_name = ' '.join(args)
         if music_name:
@@ -52,7 +52,7 @@ def initCommands(bot: Bot) -> None:
                  aliases=['跳过'],
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
-    @logger
+    @cmdLogger
     async def cmdSkip(msg: Message, *args: str):
         if args: raise Exceptions.ParameterException('None')
         player = kookvoice.Player(msg.ctx.guild.id)
@@ -63,7 +63,7 @@ def initCommands(bot: Bot) -> None:
                  aliases=['随机涩图', '随机色图', '来点图图', '来点色图', '来点涩图'],
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
-    @logger
+    @cmdLogger
     async def cmdSetu(msg: Message, *args: str):
         expr = ''.join(args)
         tags = splitExpr(expr)
@@ -77,7 +77,7 @@ def initCommands(bot: Bot) -> None:
                  aliases=['扔骰子', '掷骰子'],
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
-    @logger
+    @cmdLogger
     async def cmdDice(msg: Message, *args: str):
         t = newDice(*args)
         await msg.reply(t, use_quote=False)
@@ -86,7 +86,7 @@ def initCommands(bot: Bot) -> None:
                  aliases=['关于'],
                  case_sensitive=False,
                  exc_handlers=default_exc_handler)
-    @logger
+    @cmdLogger
     async def cmdAbout(msg: Message, *args: str):
         if args: raise Exceptions.ParameterException('None')
         c = Card(Module.Header(Element.Text(f'关于 {NAME} Bot')),

@@ -5,7 +5,7 @@ from typing import Callable
 from khl import Bot, Message, MessageTypes
 
 from .globals import ADMIN, DEBUG
-from .logger import logger, logName, addLog
+from .logger import cmdLogger, logName, addLog
 from .exceptions import default_exc_handler, Exceptions
 
 def permission(lvl: list, description: str):
@@ -23,7 +23,7 @@ def debug_command(bot: Bot) -> None:
                  case_sensitive=False,
                  prefixes=['//'],
                  exc_handlers=default_exc_handler)
-    @logger
+    @cmdLogger
     @permission(ADMIN, '管理员')
     async def debugFunc(msg: Message, *args):
         debug_channel = await bot.client.fetch_public_channel(DEBUG)
@@ -38,7 +38,7 @@ def debug_command(bot: Bot) -> None:
             elif arg == 'off':
                 await debug_channel.send('Bot 已成功下线。')
                 await bot.client.offline()
-                addLog(f'[BOT]Bot已关闭\n')
+                addLog(f'[MAIN]Bot已关闭\n')
                 sys.exit()
             elif arg == 'error':
                 raise Exceptions.DebugException(' '.join(args[1:]))

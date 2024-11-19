@@ -20,9 +20,11 @@ async def imgUpload(bot: Bot, img_url: str, img_name: str) -> str:
         with open(path, 'wb') as f:
             for chunk in re.iter_content(chunk_size=128):
                 f.write(chunk)
-        addLog(f'[FIL]已创建新文件"{path}"')
+        addLog(f'[FILE]已创建新文件"{path}"')
     i_url = await bot.client.create_asset(path)
-    try: os.remove(path)
+    try:
+        os.remove(path)
+        addLog(f'[FILE]已删除文件"{path}"')
     except Exception:
         raise Exceptions.TerminalError(f'未能成功删除文件"{path}"')
     return i_url

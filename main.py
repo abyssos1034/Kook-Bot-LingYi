@@ -15,7 +15,7 @@ kookvoice.configure_logging(enabled=False)
 
 @bot.on_startup
 async def botInit(bot: Bot):
-    addLog(f'[BOT]Bot已开启')
+    addLog(f'[MAIN]Bot已开启')
     initCommands(bot)
     initCrons(bot)
     initEvents(bot)
@@ -23,3 +23,4 @@ async def botInit(bot: Bot):
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.run_until_complete(asyncio.gather(bot.start(), kookvoice.start()))
+    loop.close()
