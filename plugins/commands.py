@@ -69,7 +69,7 @@ def initCommands(bot: Bot) -> None:
         tags = splitExpr(expr)
         img_info = getImage(tags)
         img_intro = f'**图片Pid**：{img_info.get("pid")}\n**图片Tag**：\n{img_info.get("tags")}'
-        img_url = await imgUpload(bot, img_info.get('url'), img_info.get("pid"))
+        img_url = await imgUpload(bot, img_info.get('url'), str(img_info.get("pid")))
         await msg.reply(img_url, type=MessageTypes.IMG, use_quote=False)
         await msg.reply(img_intro, use_quote=False)
 

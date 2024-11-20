@@ -22,11 +22,12 @@ async def imgUpload(bot: Bot, img_url: str, img_name: str) -> str:
                 f.write(chunk)
         addLog(f'[FILE]已创建新文件"{path}"')
     i_url = await bot.client.create_asset(path)
-    try:
-        os.remove(path)
-        addLog(f'[FILE]已删除文件"{path}"')
-    except Exception:
-        raise Exceptions.TerminalError(f'未能成功删除文件"{path}"')
+    if img_name[0] == '0':
+        try:
+            os.remove(path)
+            addLog(f'[FILE]已删除文件"{path}"')
+        except Exception:
+            raise Exceptions.TerminalError(f'未能成功删除文件"{path}"')
     return i_url
 
 def getImage(tags: list[list]) -> dict[str, str]:
