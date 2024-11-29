@@ -1,4 +1,4 @@
-import requests, json
+import requests, json, re
 
 from khl import Bot
 
@@ -13,6 +13,11 @@ def secToTime(second: int) -> str:
     min = second // 60
     sec = second % 60
     return '%02d:%02d' % (min, sec)
+
+def escape_markdown(text):
+    markdown_chars = r'[*_`\>\#\[\]\(\)\\|\!]'
+    escaped_text = re.sub(markdown_chars, r'\\\g<0>', text)
+    return escaped_text
 
 async def searchMusic(music_name: str) -> list[dict[str, str]]:
     output = list()

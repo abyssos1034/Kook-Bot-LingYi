@@ -8,7 +8,7 @@ from .logger import cmdLogger
 from .lucky import lucky, luckyText
 from .image import splitExpr, imgUpload, getImage
 from .dice import newDice
-from .music import getMusic, findUser
+from .music import getMusic, findUser, escape_markdown
 from .help import help_command
 from .debug import debug_command
 
@@ -39,10 +39,12 @@ def initCommands(bot: Bot) -> None:
                 player = kookvoice.Player(msg.ctx.guild.id, vid, TOKEN)
                 player.add_music(music=music_info.get('url'))
                 i_url = await imgUpload(bot, music_info.get('cover'), music_info.get('music_id'))
-                c = Card(Module.Header(Element.Text(f'已将歌曲 {music_info.get("music_name")} 加入播放列表。\n')),
+                music = escape_markdown(music_info.get('music_name'))
+                singer = escape_markdown(music_info.get('singer'))
+                album = escape_markdown(music_info.get('album'))
+                c = Card(Module.Header(Element.Text(f'已将歌曲 {music} 加入播放列表。')),
                          Module.Divider(),
-                         Module.Section(Element.Text(f'歌手：{music_info.get("singer")}\n时长：{music_info.get("interval")}\n专辑：{music_info.get("album")}',
-                                                     type=Types.Text.PLAIN),
+                         Module.Section(Element.Text(f'**歌手：**{singer}\n**专辑：**{album}\n**时长：**{music_info.get("interval")}'),
                                         Element.Image(src=i_url)),
                          color='#3498db')
                 await msg.reply(CardMessage(c), use_quote=False)
