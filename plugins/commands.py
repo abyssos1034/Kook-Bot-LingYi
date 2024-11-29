@@ -41,7 +41,8 @@ def initCommands(bot: Bot) -> None:
                 i_url = await imgUpload(bot, music_info.get('cover'), music_info.get('music_id'))
                 c = Card(Module.Header(Element.Text(f'已将歌曲 {music_info.get("music_name")} 加入播放列表。\n')),
                          Module.Divider(),
-                         Module.Section(Element.Text(f'**歌手：**{music_info.get("singer")}\n**时长：**{music_info.get("interval")}\n**专辑：**{music_info.get("album")}'),
+                         Module.Section(Element.Text(f'歌手：{music_info.get("singer")}\n时长：{music_info.get("interval")}\n专辑：{music_info.get("album")}',
+                                                     type=Types.Text.PLAIN),
                                         Element.Image(src=i_url)),
                          color='#3498db')
                 await msg.reply(CardMessage(c), use_quote=False)
