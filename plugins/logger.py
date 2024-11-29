@@ -1,12 +1,12 @@
 import time
 from functools import wraps
-from typing import Callable
+from typing import Callable, Any
 
 from khl import Message, GuildUser
 
-def cmdLogger(func: Callable):
+def cmdLogger(func: Callable[[Message, Any], Any]):
     @wraps(func)
-    async def wrapper(msg: Message, *args):
+    async def wrapper(msg: Message, *args) -> Any:
         heads = {'cmd': '[UCMD]'}
         author: GuildUser = msg.author
         head = heads.get(func.__name__[:3], '[DCMD]')

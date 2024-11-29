@@ -37,6 +37,7 @@ def initCommands(bot: Bot) -> None:
             else:
                 music_info = await getMusic(bot, music_name)
                 player = kookvoice.Player(msg.ctx.guild.id, vid, TOKEN)
+                if music_info is None: raise Exceptions.MusicSearchWarning(music_name)
                 player.add_music(music=music_info.get('url'))
                 i_url = await imgUpload(bot, music_info.get('cover'), music_info.get('music_id'))
                 music = escape_markdown(music_info.get('music_name'))
