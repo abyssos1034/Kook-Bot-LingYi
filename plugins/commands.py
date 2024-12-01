@@ -40,7 +40,7 @@ def initCommands(bot: Bot) -> None:
                 if music_info is None: raise Exceptions.MusicSearchWarning(music_name)
                 player.add_music(music=music_info.get('url'))
                 i_url = await imgUpload(bot, music_info.get('cover'), music_info.get('music_id'))
-                music = escape_markdown(music_info.get('music_name'))
+                music = music_info.get('music_name')
                 singer = escape_markdown(music_info.get('singer'))
                 album = escape_markdown(music_info.get('album'))
                 c = Card(Module.Header(Element.Text(f'已将歌曲 {music} 加入播放列表。')),
